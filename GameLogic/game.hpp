@@ -29,7 +29,7 @@ enum class GameState
 // Express chosen cell piece and position
 struct Cell
 {
-    Piece *piece;
+    std::unique_ptr<Piece> piece;
     Position position;
 };
 
