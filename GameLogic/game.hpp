@@ -27,16 +27,47 @@ enum class GameState
 };
 
 // Express chosen cell piece and position
-struct Cell
+struct SelectedCell
 {
     std::unique_ptr<Piece> piece;
     Position position;
 };
 
 // The size of the board Matrix(RowsxColumns)
-const int SIZE = 8;
+constexpr int SIZE = 8;
 class Game
 {
+public:
+    Game() : _board(getInitialGameBoard()), _player(Player::WHITE), _gameState(GameState::RUNNING) {}
+    virtual ~Game() = default;
+    // Click on specific cell on the board must return cell information(consists of type of the piece and the position of this cell(old piece position ))
+    // A Player choose a cell to move a piece from and another cell to move the piece to
+
+    /**
+     * @brief Check if it is the player turn, Check the pice belong to current player and Get all available moves for a piece on a given cell.
+     * @param cell The cell containing the piece chosen to be moved.
+     * @return std::vector<Position> List of available move positions.
+     */
+    std::vector<Position> movePieceFrom(SelectedCell& cell);
+
+    /**
+     * @brief Check the if the chosen cell is available to move the piece to.
+     * @param cell The cell chosen to move the piece to.
+     * @return std::string (a message as a result for action success or fail).
+     */
+    std::string movePieceTo(SelectedCell& cell);
+
+    // Return current board
+    Board getGameBoard() const;
+
+    // Return current Player
+    Player getPlayer() const;
+
+    // Check if the game is over
+    bool isTheGameOver();
+
+    // Return Game state
+    GameState getGameState();
 private:
     // Boar Type -> define the game board or a chunk of it
     using Board = std::vector<std::vector<std::unique_ptr<Piece>>>;
@@ -71,34 +102,7 @@ private:
     // Switch Player turns(return a message that the player switched)
     std::string switchPlayer();
 
-public:
-    Game() : _board(getInitialGameBoard()), _player(Player::WHITE), _gameState(GameState::RUNNING) {}
-    virtual ~Game() = default;
-    // Click on specific cell on the board must return cell information(consists of type of the piece and the position of this cell(old piece position ))
-    // A Player choose a cell to move a piece from and another cell to move the piece to
 
-    /**
-     * @brief Check if it is the player turn, Check the pice belong to current player and Get all available moves for a piece on a given cell.
-     * @param cell The cell containing the piece chosen to be moved.
-     * @return std::vector<Position> List of available move positions.
-     */
-    std::vector<Position> movePieceFrom(Cell cell);
-
-    /**
-     * @brief Check the if the chosen cell is available to move the piece to.
-     * @param cell The cell chosen to move the piece to.
-     * @return std::string (a message as a result for action success or fail).
-     */
-    std::string movePieceTo(Cell cell);
-
-    // Return current board
-    Board getGameBoard() const;
-
-    // Return current Player
-    Player getPlayer() const;
-
-    // Check if the game is over
-    bool isTheGameOver();
 };
 
 #endif
